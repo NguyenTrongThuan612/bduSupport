@@ -24,6 +24,8 @@ from bduSuport.views.contact.management import ContactManagementView
 from bduSuport.views.contact.miniapp import ContactView
 from bduSuport.views.custom_refresh_token_view import CustomRefreshTokenView
 from bduSuport.views.evaluation_method import EvaluationMethodView
+from bduSuport.views.facility.management import FacilityManagementView
+from bduSuport.views.facility.miniapp import MiniappFacilityView
 from bduSuport.views.feedback.feedback import FeedbackView
 from bduSuport.views.feedback.feedback_management import FeedbackManagementView
 from bduSuport.views.handbook.management import HandbookManagementView
@@ -97,6 +99,7 @@ miniapp_router.register('admission-registration', AdmissionRegistrationView, bas
 miniapp_router.register('training-location', MiniappTrainingLocationView, basename='miniapp_training_location')
 miniapp_router.register('student-supervision-registration', MiniappStudentSupervisionRegistrationView, basename='miniapp_student_supervision_registration')
 miniapp_router.register('student-supervision', MiniappStudentSupervisionView, basename='miniapp_student_supervision')
+miniapp_router.register('facilities', MiniappFacilityView, basename='miniapp_facilities')
 
 backoffice_router.register('super-admin', RootView, basename='super_admin')
 backoffice_router.register('majors', MajorView, basename='major_management')
@@ -109,6 +112,7 @@ backoffice_router.register('accounts', AccountManagementView, basename='account_
 backoffice_router.register('feedbacks', FeedbackManagementView, basename='feedback_management')
 backoffice_router.register('reservations', ReservationManagementView, basename='reservation_management')
 backoffice_router.register('news-types', NewsTypeManagementView, basename='news_type_management')
+backoffice_router.register('facilities', FacilityManagementView, basename='facilities_management')
 backoffice_router.register('admin/accounts', AdminAccountView, basename='backoffice_admin_account')
 backoffice_router.register('academic-levels', AcademicLevelView, basename='academic_level_management')
 backoffice_router.register('app-functions', AppFunctionManagementView, basename='app_function_management')
