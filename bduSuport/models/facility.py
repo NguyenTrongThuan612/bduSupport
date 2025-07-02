@@ -19,7 +19,6 @@ class Facility(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, help_text="Name of the facility")
     description = models.TextField(help_text="Description of the facility")
-    image_url = models.URLField(max_length=500, help_text="URL of the facility image")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, default=None)

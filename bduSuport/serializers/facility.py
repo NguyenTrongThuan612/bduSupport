@@ -1,17 +1,18 @@
-"""Facility serializer for API operations."""
-
 from rest_framework import serializers
 from bduSuport.models.facility import Facility
-from bduSuport.helpers.firebase_storage_provider import FirebaseStorageProvider
+from bduSuport.serializers.facility_image import FacilityImageSerializer
 
 
 class FacilitySerializer(serializers.ModelSerializer):
-    """Serializer for Facility model."""
-    
+    images = serializers.SerializerMethodField()
+
     class Meta:
         model = Facility
         fields = "__all__"
-        read_only_fields = ['id', 'created_at', 'updated_at', 'deleted_at']
+    
+    def get_images(self, obj):
+        active_images = obj.images.filter(deleted_at=None)
+        return FacilityImageSerializer(active_images, many=True).data
     
     def __init__(self, *args, **kwargs):
         existing = set(self.fields.keys())
@@ -40,8 +41,7 @@ class FacilityCreateSerializer(serializers.Serializer):
     """Serializer for creating new facilities."""
     
     name = serializers.CharField(required=True)
-    description = serializers.CharField(required=True)
-    image = serializers.FileField(required=True)
+    description = serializers.CharField(required=False)
     
     def validate_name(self, value):
         """Validate facility name."""
@@ -57,14 +57,9 @@ class FacilityCreateSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         """Create and return a new Facility instance."""
-        image_file = validated_data.pop('image')
-        storage_provider = FirebaseStorageProvider()
-        image_url = storage_provider.upload_file(image_file)
-        
         facility = Facility.objects.create(
             name=validated_data['name'],
-            description=validated_data['description'],
-            image_url=image_url
+            description=validated_data['description']
         )
         return facility
 
@@ -74,7 +69,6 @@ class FacilityUpdateSerializer(serializers.Serializer):
     
     name = serializers.CharField(required=False, allow_blank=True)
     description = serializers.CharField(required=False, allow_blank=True)
-    image = serializers.FileField(required=False)
     
     def validate_name(self, value):
         """Validate facility name."""
@@ -95,11 +89,6 @@ class FacilityUpdateSerializer(serializers.Serializer):
         
         if 'description' in validated_data:
             instance.description = validated_data['description']
-        
-        if 'image' in validated_data:
-            storage_provider = FirebaseStorageProvider()
-            image_url = storage_provider.upload_file(validated_data['image'])
-            instance.image_url = image_url
         
         instance.save()
         return instance 

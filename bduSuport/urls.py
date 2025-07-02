@@ -26,6 +26,7 @@ from bduSuport.views.custom_refresh_token_view import CustomRefreshTokenView
 from bduSuport.views.evaluation_method import EvaluationMethodView
 from bduSuport.views.facility.management import FacilityManagementView
 from bduSuport.views.facility.miniapp import MiniappFacilityView
+from bduSuport.views.facility.facility_image_management import FacilityImageManagementView
 from bduSuport.views.feedback.feedback import FeedbackView
 from bduSuport.views.feedback.feedback_management import FeedbackManagementView
 from bduSuport.views.handbook.management import HandbookManagementView
@@ -113,6 +114,7 @@ backoffice_router.register('feedbacks', FeedbackManagementView, basename='feedba
 backoffice_router.register('reservations', ReservationManagementView, basename='reservation_management')
 backoffice_router.register('news-types', NewsTypeManagementView, basename='news_type_management')
 backoffice_router.register('facilities', FacilityManagementView, basename='facilities_management')
+backoffice_router.register('facility-images', FacilityImageManagementView, basename='facility_images_management')
 backoffice_router.register('admin/accounts', AdminAccountView, basename='backoffice_admin_account')
 backoffice_router.register('academic-levels', AcademicLevelView, basename='academic_level_management')
 backoffice_router.register('app-functions', AppFunctionManagementView, basename='app_function_management')

@@ -23,9 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class FacilityManagementView(viewsets.ViewSet):
-    """ViewSet for managing facilities in backoffice."""
-    
-    # authentication_classes = (BackofficeAuthentication,)
+    authentication_classes = (BackofficeAuthentication,)
     parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(
@@ -38,14 +36,6 @@ class FacilityManagementView(viewsets.ViewSet):
         }
     )
     def create(self, request: Request) -> Response:
-        """Create a new facility.
-        
-        Args:
-            request: HTTP request containing facility data
-            
-        Returns:
-            Response: Created facility data or error response
-        """
         try:
             logger.info("FacilityManagementView.create req=%s", request.data)
             
@@ -84,14 +74,6 @@ class FacilityManagementView(viewsets.ViewSet):
         }
     )
     def list(self, request: Request) -> Response:
-        """Get list of all active facilities.
-        
-        Args:
-            request: HTTP request
-            
-        Returns:
-            Response: Paginated list of facilities
-        """
         try:
             queryset = Facility.get_active_facilities().order_by('-created_at')
             paginator = CustomPageNumberPagination()
@@ -122,15 +104,6 @@ class FacilityManagementView(viewsets.ViewSet):
         }
     )
     def update(self, request: Request, pk: int) -> Response:
-        """Update a specific facility by ID.
-        
-        Args:
-            request: HTTP request containing updated facility data
-            pk: Facility ID
-            
-        Returns:
-            Response: Updated facility data or error response
-        """
         try:
             try:
                 facility = Facility.objects.get(id=pk, deleted_at=None)
@@ -172,15 +145,6 @@ class FacilityManagementView(viewsets.ViewSet):
         }
     )
     def destroy(self, request: Request, pk: int) -> Response:
-        """Soft delete a specific facility by ID.
-        
-        Args:
-            request: HTTP request
-            pk: Facility ID
-            
-        Returns:
-            Response: Success or error response
-        """
         try:
             try:
                 facility = Facility.objects.get(id=pk, deleted_at=None)
