@@ -95,4 +95,34 @@ class FacilityImageManagementView(viewsets.ViewSet):
             return RestResponse(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 message="Internal server error"
+            ).response
+
+    @swagger_auto_schema(
+        operation_description="Get facility image details by ID",
+        responses={
+            200: FacilityImageSerializer,
+            404: "Not Found",
+            500: "Internal Server Error"
+        }
+    )
+    def retrieve(self, request: Request, pk: int) -> Response:
+        try:
+            try:
+                facility_image = FacilityImage.objects.get(id=pk, deleted_at=None)
+            except FacilityImage.DoesNotExist:
+                return RestResponse(
+                    status=status.HTTP_404_NOT_FOUND,
+                    message="Facility image not found"
+                ).response
+            
+            return RestResponse(
+                data=FacilityImageSerializer(facility_image).data,
+                status=status.HTTP_200_OK
+            ).response
+            
+        except Exception as e:
+            logger.exception("FacilityImageManagementView.retrieve exc=%s, pk=%s", e, pk)
+            return RestResponse(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                message="Internal server error"
             ).response 
