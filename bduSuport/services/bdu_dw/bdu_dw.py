@@ -1,13 +1,14 @@
 import logging
 import requests
+from typing import List
 from datetime import date
 from decouple import config
 from requests.auth import HTTPBasicAuth
 
 from bduSuport.helpers.http import is_2xx
-from bduSuport.services.bdu_dw.dto import Attendance, BduStudentDto, StudentScore, TimeTable, StudentEvent
+from bduSuport.services.bdu_dw.dto import Attendance, BduStudentDto, StudentScore, TimeTable, StudentEvent, StudentClassification
 from bduSuport.services.bdu_dw.key_mapper import convert_keys, convert_list
-from bduSuport.services.bdu_dw.mapping_dicts import student_key_mapping, attendance_key_mapping, score_key_mapping, time_table_mapping, event_key_mapping
+from bduSuport.services.bdu_dw.mapping_dicts import student_key_mapping, attendance_key_mapping, score_key_mapping, time_table_mapping, event_key_mapping, classification_key_mapping
 
 class BduDwService:
     __base_url = ""
@@ -209,4 +210,38 @@ class BduDwService:
             return events
         except Exception as e:
             logging.getLogger().exception("BduDwService.get_student_events exc=%s, resp_content=%s", str(e), resp.text)
+            return []
+
+    def get_student_academic_classifications(self, student_code: str, date: date = None) -> List[StudentClassification]:
+        try:
+            resp = requests.get(
+                f"{self.__base_url}/dim_xep_loai_hoc_ki_odp",
+                params={
+                    "mssv": student_code,
+                    "date": date.strftime("%Y-%m-%d") if date else None,
+                },
+                auth=HTTPBasicAuth(self.__username, self.__password),
+                verify=False
+            )
+
+            if not is_2xx(resp.status_code):
+                logging.getLogger().error("BduDwService.get_student_academic_classifications status_code not is 2xx student_code=%s, content=%s", student_code, resp.text)
+                return []
+            
+            dataset = resp.json()
+
+            if not isinstance(dataset, list):
+                logging.getLogger().error("BduDwService.get_student_academic_classifications response is not a list student_code=%s, content=%s", student_code, resp.text)
+                return []
+            
+            if len(dataset) == 0:
+                logging.getLogger().info("BduDwService.get_student_academic_classifications response is empty student_code=%s, content=%s", student_code, resp.text)
+                return []
+            
+            converted_dataset = convert_list(dataset, classification_key_mapping)
+            classifications = [StudentClassification(**converted_data) for converted_data in converted_dataset]
+            
+            return classifications
+        except Exception as e:
+            logging.getLogger().exception("BduDwService.get_student_academic_classifications exc=%s, resp_content=%s", str(e), resp.text)
             return []

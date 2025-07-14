@@ -148,3 +148,21 @@ class StudentEvent:
                 self.event_date = datetime.strptime(self.event_date, "%a, %d %b %Y %H:%M:%S %Z")
             except Exception:
                 pass
+
+@dataclass
+class StudentClassification:
+    date: str = ""
+    score: float = 0.0
+    full_name: str = ""
+    student_id: str = ""
+    semester_code: int = 0
+    classification: str = ""
+    academic_year: str = ""
+    semester: int = 0
+
+    def __post_init__(self):
+        if self.semester_code:
+            year_start = int(str(self.semester_code)[:2]) + 2000
+            year_end = int(str(self.semester_code)[2:4]) + 2000
+            self.semester = int(str(self.semester_code)[-1])
+            self.academic_year = f"{year_start}-{year_end}"

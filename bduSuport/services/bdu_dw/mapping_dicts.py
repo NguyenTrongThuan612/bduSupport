@@ -97,3 +97,12 @@ event_key_mapping = {
     "ten_sv": "student_name",
     "loai": "type"
 }
+
+classification_key_mapping = {
+    "date": "date",
+    "diem": "score",
+    "ho_ten": "full_name",
+    "mssv": "student_id",
+    "nkhk": "semester_code",
+    "xep_loai": "classification"
+}

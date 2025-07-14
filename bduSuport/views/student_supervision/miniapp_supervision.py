@@ -130,3 +130,26 @@ class MiniappStudentSupervisionView(viewsets.ViewSet):
         except Exception as e:
             logging.getLogger().exception("MiniappStudentSupervisionView.get_events exc=%s, pk=%s, params=%s", e, pk, request.query_params)
             return RestResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR).response
+
+    @action(methods=["GET"], detail=True, url_path="academic-classifications")
+    def get_academic_classifications(self, request, pk):
+        try:
+            logging.getLogger().info("MiniappStudentSupervisionView.get_academic_classifications pk=%s", pk)
+
+            if not StudentSupervisionRegistration.objects.filter(deleted_at=None, miniapp_user=request.user, student_dw_code=pk).exists():
+                return RestResponse(status=status.HTTP_400_BAD_REQUEST, message="Bạn không có quyền xem dữ liệu sinh viên này!").response
+
+            classifications = BduDwService().get_student_academic_classifications(
+                student_code=pk
+            )
+            
+            result = []
+            for classification in classifications:
+                result.append(asdict(classification))
+
+            result = sorted(result, key=lambda x: x["semester_code"], reverse=True)
+
+            return RestResponse(result).response
+        except Exception as e:
+            logging.getLogger().exception("MiniappStudentSupervisionView.get_academic_classifications exc=%s, pk=%s", e, pk)
+            return RestResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR).response
