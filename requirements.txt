@@ -17,4 +17,4 @@ requests
 firebase_admin
 logtail-python
 celery==5.4.0
-django-celery-beat
+django-celery-beat==2.7.0
