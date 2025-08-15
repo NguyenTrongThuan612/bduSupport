@@ -27,6 +27,10 @@ class CollegeExamGroupView(viewsets.ViewSet):
             
             with transaction.atomic():
                 _data = validate.validated_data
+
+                if CollegeExamGroup.objects.filter(code=_data["code"], deleted_at=None).exists():
+                    return RestResponse(status=status.HTTP_400_BAD_REQUEST, message="Mã khối ngành đã tồn tại!").response
+                
                 subjects = _data.pop("subjects")
                 group = CollegeExamGroup(**_data)
                 group.save()

@@ -7,7 +7,7 @@ class CollegeExamGroup(models.Model):
         db_table = "college_exam_group"
 
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=5, unique=True)
+    code = models.CharField(max_length=5)
     name = models.CharField(max_length=255)
     subjects = models.ManyToManyField(Subject, through="bduSuport.CollegeM2MSubject", related_name="college_groups")
     created_at = models.DateTimeField(auto_now_add=True)
